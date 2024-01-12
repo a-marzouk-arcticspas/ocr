@@ -1,8 +1,8 @@
-import './App.css';
-import ImageReader from "./components/ImageReader";
-import CameraImageReader from "./components/CameraImageReader";
 import {useState} from "react";
-import MobileReader from "./components/MobileReader";
+import './App.css';
+import ImageURL from "./partials/ImageURL";
+import CameraSnapshot from "./partials/CameraSnapshot";
+import UploadFile from "./partials/UploadFile";
 
 function App() {
 
@@ -46,11 +46,11 @@ function App() {
 
                 <div>
                     {convertType === 'url' ? (
-                        <ImageReader/>
+                        <ImageURL/>
                     ) : convertType === 'camera' ? (
-                        <CameraImageReader/>
+                        <CameraSnapshot/>
                     ) : (
-                        <MobileReader/>
+                        <UploadFile/>
                     )}
                 </div>
 

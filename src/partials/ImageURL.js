@@ -1,7 +1,9 @@
 import React, {useState} from "react";
 import useImageReader from "../hooks/useImageReader";
-export default function ImageReader() {
-    const {isConverting, readImageFromURL } = useImageReader()
+import BasicButton from "../components/BasicButton";
+
+export default function ImageURL() {
+    const {isConverting, readImageFromURL} = useImageReader()
     const [generatedText, setGeneratedText] = useState('');
     const [imageURL, setImageURL] = useState('');
 
@@ -22,15 +24,14 @@ export default function ImageReader() {
                 Please insert image url
             </div>
 
-            <input className="mt-4 pl-2 rounded w-full mb-6 pb-1 text-black max-w-2xl" type="text"
-                   placeholder="https://" onChange={handleURLInput}/>
+            <input
+                className="mt-4 pl-2 rounded w-full mb-6 pb-1 text-black max-w-2xl"
+                type="text"
+                placeholder="https://"
+                onChange={handleURLInput}
+            />
 
-            <div>
-                <button disabled={isConverting || !imageURL} onClick={convertImage}
-                        className="disabled:bg-gray-400 text-white bg-blue-500 px-4 py-2 rounded">
-                    Convert
-                </button>
-            </div>
+            <BasicButton isDisabled={isConverting || !imageURL} action={convertImage}  title="Convert"/>
 
             <div>
                 {imageURL ? (

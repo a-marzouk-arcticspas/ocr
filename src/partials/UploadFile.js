@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import useImageReader from "../hooks/useImageReader";
+import BasicButton from "../components/BasicButton";
 
-const MobileReader = () => {
+const UploadFile = () => {
     const [generatedText, setGeneratedText] = useState('');
     const [outputImage, setOutputImage] = useState('')
 
@@ -49,12 +50,7 @@ const MobileReader = () => {
                     ) : null}
                 </div>
 
-                <div className="mt-8">
-                    <button onClick={convert} disabled={isConverting || !outputImage}
-                            className="disabled:bg-gray-400 text-white bg-blue-500 px-4 py-2 rounded">
-                        Convert
-                    </button>
-                </div>
+                <BasicButton isDisabled={isConverting || !outputImage} action={convert} title="Convert" cssClasses="mt-8"/>
 
                 {
                     generatedText.length > 0 ?
@@ -75,4 +71,4 @@ const MobileReader = () => {
 
 }
 
-export default MobileReader;
+export default UploadFile;

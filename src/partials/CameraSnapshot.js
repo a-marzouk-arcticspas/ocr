@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import useCamera from "../hooks/useCamera";
 import useImageReader from "../hooks/useImageReader";
+import BasicButton from "../components/BasicButton";
 
-const CameraImageReader = () => {
+const CameraSnapshot = () => {
     const [generatedText, setGeneratedText] = useState('');
     const {isCameraOn, outputImageURL, startCamera, closeCamera, takeSnapshot} = useCamera();
     const {isConverting, readImageFromURL} = useImageReader()
@@ -16,24 +17,14 @@ const CameraImageReader = () => {
         <div>
             <div>
                 {!isCameraOn ?
-                    <button onClick={startCamera}
-                            className="disabled:bg-gray-400 text-white bg-blue-500 px-4 py-2 rounded">
-                        Open Camera
-                    </button>
+                    <BasicButton action={startCamera}  title="Start Camera"/>
                     :
                     <div className="flex gap-3 text-white">
-                        <button onClick={closeCamera}
-                                className="disabled:bg-gray-400 bg-red-600 px-4 py-2 rounded">
-                            Close Camera
-                        </button>
-                        <button onClick={takeSnapshot}
-                                className="disabled:bg-gray-400 bg-green-700 px-4 py-2 rounded">
-                            Take a snapshot
-                        </button>
-                        <button onClick={convert} disabled={!outputImageURL || isConverting}
-                                className="disabled:bg-gray-400 bg-green-900 px-4 py-2 rounded">
-                            Convert
-                        </button>
+                        <BasicButton action={closeCamera} title="Close Camera" cssClasses="bg-red-600" />
+
+                        <BasicButton action={takeSnapshot} title="Take a Snapshot" cssClasses="bg-green-700" />
+
+                        <BasicButton isDisabled={isConverting || !outputImageURL} action={convert} title="Convert"/>
                     </div>
 
                 }
@@ -63,4 +54,4 @@ const CameraImageReader = () => {
     );
 };
 
-export default CameraImageReader;
+export default CameraSnapshot;
