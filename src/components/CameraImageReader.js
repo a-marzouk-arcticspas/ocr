@@ -17,7 +17,7 @@ const CameraImageReader = () => {
             <div>
                 {!isCameraOn ?
                     <button onClick={startCamera}
-                            className="disabled:bg-gray-400 bg-blue-900 px-4 py-2 rounded mb-6 mt-6">
+                            className="disabled:bg-gray-400 bg-blue-900 px-4 py-2 rounded mb-6">
                         Open Camera
                     </button>
                     :

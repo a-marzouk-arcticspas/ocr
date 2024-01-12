@@ -34,9 +34,8 @@ const MobileReader = () => {
 
         return (
             <div>
-
                 <input type="file" onChange={handleFileChange} accept="image/*;capture=camera"
-                       className="text-sm lg:text-2xl max-w-full m-auto border-2 rounded mt-16 mb-8"/>
+                       className="text-sm lg:text-2xl max-w-full m-auto border-2 rounded mb-8"/>
 
                 <div>
                     {outputImage ? (
