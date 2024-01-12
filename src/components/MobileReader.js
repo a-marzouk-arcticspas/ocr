@@ -35,7 +35,7 @@ const MobileReader = () => {
         return (
             <div>
                 <input type="file" onChange={handleFileChange} accept="image/*;capture=camera"
-                       className="text-sm lg:text-2xl max-w-full m-auto border-2 rounded mb-8"/>
+                       className="text-sm lg:text-2xl max-w-full m-auto border-2 rounded"/>
 
                 <div>
                     {outputImage ? (
@@ -43,27 +43,30 @@ const MobileReader = () => {
                             <img
                                 src={outputImage}
                                 alt="Preview"
-                                className="max-w-full p-6 lg:max-w-2xl mt-4 rounded-2xl m-auto"
+                                className="max-w-full mt-8 rounded-2xl m-auto"
                             />
                         </div>
                     ) : null}
                 </div>
 
-                <div className="flex gap-3 justify-center">
+                <div className="mt-8">
                     <button onClick={convert} disabled={isConverting || !outputImage}
-                            className="disabled:bg-gray-400 bg-green-900 px-4 py-2 rounded mb-6 mt-6">
+                            className="disabled:bg-gray-400 text-white bg-blue-500 px-4 py-2 rounded">
                         Convert
                     </button>
                 </div>
 
-
-                <hr className="mt-16"/>
+                {
+                    generatedText.length > 0 ?
+                        <hr className="bg-blue-900 pb-0.5 mt-8 mb-4 rounded-2xl overflow-hidden"/>
+                        : null
+                }
 
                 {
                     generatedText.length > 0 ? (
-                        <div className="text-xl max-w-2xl mt-16 mb-16">
-                            <div className="mb-6">Converted text</div>
-                            <div className="text-green-600 leading-relaxed">{generatedText}</div>
+                        <div className="text-xl max-w-2xl mb-16">
+                            <div className="mb-2 text-lg font-bold leading-relaxed">Converted text:</div>
+                            <div className="text-green-700 font-bold leading-relaxed">{generatedText}</div>
                         </div>
                     ) : null
                 }

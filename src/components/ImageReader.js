@@ -67,7 +67,12 @@ export default function ImageReader() {
                 </div>
             </div>
 
-            <hr className="bg-blue-900 pb-0.5 mt-8 mb-4"/>
+
+            {
+                generatedText.length > 0 ?
+                    <hr className="bg-blue-900 pb-0.5 mt-8 mb-4"/>
+                    : null
+            }
 
             {
                 generatedText.length > 0 ? (
