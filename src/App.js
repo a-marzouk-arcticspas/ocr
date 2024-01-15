@@ -4,9 +4,9 @@ import ImageURL from "./partials/ImageURL";
 import CameraSnapshot from "./partials/CameraSnapshot";
 import UploadFile from "./partials/UploadFile";
 import RadioGroup from "./components/RadioGroup";
+import Divider from "./components/Divider";
 
 function App() {
-
     const [convertType, setConvertType] = useState("url");
     const [activeAPI, setActiveAPI] = useState("tesseract")
 
@@ -30,7 +30,7 @@ function App() {
     };
 
     return (
-        <div className="min-h-screen bg-blue-100 py-14 px-6">
+        <div className="min-h-screen bg-gray-200 py-14 px-6">
             <div className="m-auto max-w-4xl">
                 <div className="text-3xl text-center mb-12">
                     OCR using
@@ -47,7 +47,7 @@ function App() {
                 <RadioGroup title="Please select input method" name="convertTypeRadio" options={convertTypeOptions}
                             handleRadioChange={handleConvertTypeChange} selectedOption={convertType}/>
 
-                <hr className="bg-blue-900 pb-0.5 mb-4"/>
+                <Divider/>
 
                 <div>
                     {

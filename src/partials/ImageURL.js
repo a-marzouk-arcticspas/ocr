@@ -6,13 +6,12 @@ import GeneratedTextView from "../components/GeneratedTextView";
 
 export default function ImageURL({activeAPI = "tesseract"}) {
     const {convertImageToText: tesseractConvert, isConverting: isTesseractConverting} = useTesseractImageConverter();
-    const {convertImageToText: awsTextractConvert, isConverting: isAwsTextractConverting} = useAwsTextractImageConverter();
+    const { convertImageToText: awsTextractConvert, isConverting: isAwsTextractConverting} = useAwsTextractImageConverter();
     const [generatedText, setGeneratedText] = useState(null);
     const [imageURL, setImageURL] = useState('');
 
     const convert = async () => {
-
-        const result =  activeAPI === 'tesseract' ? await tesseractConvert(imageURL) : await awsTextractConvert(imageURL);
+        const result = activeAPI === 'tesseract' ? await tesseractConvert(imageURL) : await awsTextractConvert(imageURL);
 
         updateGeneratedText(result);
     }
@@ -37,7 +36,8 @@ export default function ImageURL({activeAPI = "tesseract"}) {
                 onChange={handleURLInput}
             />
 
-            <BasicButton isDisabled={isTesseractConverting || isAwsTextractConverting || !imageURL} action={convert}  title="Convert"/>
+            <BasicButton isDisabled={isTesseractConverting || isAwsTextractConverting || !imageURL} action={convert}
+                         title="Convert"/>
 
             <div>
                 {imageURL ? (
@@ -51,7 +51,7 @@ export default function ImageURL({activeAPI = "tesseract"}) {
                 ) : null}
             </div>
 
-            <GeneratedTextView text={generatedText} />
+            <GeneratedTextView text={generatedText}/>
         </div>
     )
 }

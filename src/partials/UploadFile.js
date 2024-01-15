@@ -6,7 +6,10 @@ import GeneratedTextView from "../components/GeneratedTextView";
 
 const UploadFile = ({activeAPI = "tesseract"}) => {
     const {convertImageToText: tesseractConvert, isConverting: isTesseractConverting} = useTesseractImageConverter();
-    const {convertImageToText: awsTextractConvert, isConverting: isAwsTextractConverting} = useAwsTextractImageConverter();
+    const {
+        convertImageToText: awsTextractConvert,
+        isConverting: isAwsTextractConverting
+    } = useAwsTextractImageConverter();
 
 
     const [generatedText, setGeneratedText] = useState(null);
@@ -14,7 +17,7 @@ const UploadFile = ({activeAPI = "tesseract"}) => {
     const [uploadedFile, setUploadedFile] = useState(null)
 
     const convert = async () => {
-        const result =  activeAPI === 'tesseract' ? await tesseractConvert(outputImage) : await awsTextractConvert(uploadedFile);
+        const result = activeAPI === 'tesseract' ? await tesseractConvert(outputImage) : await awsTextractConvert(uploadedFile);
 
         setGeneratedText(result);
     }
@@ -42,29 +45,30 @@ const UploadFile = ({activeAPI = "tesseract"}) => {
         }
     }
 
-        return (
+    return (
+        <div>
+            <input type="file" onChange={handleFileChange} accept="image/*;capture=camera"
+                   className="text-sm lg:text-2xl max-w-full m-auto border-2 rounded"/>
+
             <div>
-                <input type="file" onChange={handleFileChange} accept="image/*;capture=camera"
-                       className="text-sm lg:text-2xl max-w-full m-auto border-2 rounded"/>
-
-                <div>
-                    {outputImage ? (
-                        <div>
-                            <img
-                                src={outputImage}
-                                alt="Preview"
-                                className="max-w-full mt-8 rounded-2xl m-auto"
-                            />
-                        </div>
-                    ) : null}
-                </div>
-
-                <BasicButton isDisabled={isTesseractConverting || isAwsTextractConverting || !outputImage} action={convert} title="Convert" cssClasses="mt-8"/>
-
-                <GeneratedTextView text={generatedText} />
-
+                {outputImage ? (
+                    <div>
+                        <img
+                            src={outputImage}
+                            alt="Preview"
+                            className="max-w-full mt-8 rounded-2xl m-auto"
+                        />
+                    </div>
+                ) : null}
             </div>
-        );
+
+            <BasicButton isDisabled={isTesseractConverting || isAwsTextractConverting || !outputImage} action={convert}
+                         title="Convert" cssClasses="mt-8"/>
+
+            <GeneratedTextView text={generatedText}/>
+
+        </div>
+    );
 
 }
 
