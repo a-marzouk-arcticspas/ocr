@@ -1,27 +1,36 @@
 import React, {useState} from 'react';
-import useImageReader from "../hooks/useImageReader";
+import useTesseractImageConverter from "../hooks/useTesseractImageConverter";
 import BasicButton from "../components/BasicButton";
+import useAwsTextractImageConverter from "../hooks/useAwsTextractImageConverter";
+import GeneratedTextView from "../components/GeneratedTextView";
 
-const UploadFile = () => {
-    const [generatedText, setGeneratedText] = useState('');
+const UploadFile = ({activeAPI = "tesseract"}) => {
+    const {convertImageToText: tesseractConvert, isConverting: isTesseractConverting} = useTesseractImageConverter();
+    const {convertImageToText: awsTextractConvert, isConverting: isAwsTextractConverting} = useAwsTextractImageConverter();
+
+
+    const [generatedText, setGeneratedText] = useState(null);
     const [outputImage, setOutputImage] = useState('')
-
-    const {isConverting, readImageFromURL} = useImageReader()
+    const [uploadedFile, setUploadedFile] = useState(null)
 
     const convert = async () => {
-        setGeneratedText(await readImageFromURL(outputImage));
+        const result =  activeAPI === 'tesseract' ? await tesseractConvert(outputImage) : await awsTextractConvert(uploadedFile);
+
+        setGeneratedText(result);
     }
 
     const handleFileChange = async (event) => {
         const file = event.target.files[0];
 
         if (file) {
+            setUploadedFile(file);
+
             try {
                 // Create a FileReader object to read the file content
                 const reader = new FileReader();
 
                 // Define a callback function to handle the file read completion
-                reader.onload = (event) => {
+                reader.onload = async (event) => {
                     setOutputImage(event.target.result);
                 };
 
@@ -50,22 +59,10 @@ const UploadFile = () => {
                     ) : null}
                 </div>
 
-                <BasicButton isDisabled={isConverting || !outputImage} action={convert} title="Convert" cssClasses="mt-8"/>
+                <BasicButton isDisabled={isTesseractConverting || isAwsTextractConverting || !outputImage} action={convert} title="Convert" cssClasses="mt-8"/>
 
-                {
-                    generatedText.length > 0 ?
-                        <hr className="bg-blue-900 pb-0.5 mt-8 mb-4 rounded-2xl overflow-hidden"/>
-                        : null
-                }
+                <GeneratedTextView text={generatedText} />
 
-                {
-                    generatedText.length > 0 ? (
-                        <div className="text-xl max-w-2xl mb-16">
-                            <div className="mb-2 text-lg font-bold leading-relaxed">Converted text:</div>
-                            <div className="text-green-700 font-bold leading-relaxed">{generatedText}</div>
-                        </div>
-                    ) : null
-                }
             </div>
         );
 

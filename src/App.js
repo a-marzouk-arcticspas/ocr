@@ -3,55 +3,58 @@ import './App.css';
 import ImageURL from "./partials/ImageURL";
 import CameraSnapshot from "./partials/CameraSnapshot";
 import UploadFile from "./partials/UploadFile";
+import RadioGroup from "./components/RadioGroup";
 
 function App() {
 
     const [convertType, setConvertType] = useState("url");
+    const [activeAPI, setActiveAPI] = useState("tesseract")
 
-    const radioOptions = [
+    const convertTypeOptions = [
         {id: 'url', value: 'url', label: 'Image URL'},
         {id: 'camera', value: 'camera', label: 'Use Camera (best for desktop)'},
         {id: 'mobile', value: 'mobile', label: 'Upload file (best for mobile)'},
     ];
 
-    const handleRadioChange = (event) => {
+    const apiOptions = [
+        {id: 'tesseract', value: 'tesseract', label: 'Tesseract'},
+        {id: 'textract', value: 'textract', label: 'Amazon Textract'},
+    ];
+
+    const handleConvertTypeChange = (event) => {
         setConvertType(event.target.value); // Update convertType with the selected radio button value
     };
+
+    const handleActiveAPIChange = (event) => {
+        setActiveAPI(event.target.value); // Update convertType with the selected radio button value
+    };
+
     return (
         <div className="min-h-screen bg-blue-100 py-14 px-6">
             <div className="m-auto max-w-4xl">
                 <div className="text-3xl text-center mb-12">
-                    OCR using <a className="text-blue-600 underline" href="https://tesseract.projectnaptha.com/">Tesseract</a>
+                    OCR using
+                    <a className="text-blue-600 underline pl-2"
+                       href="https://tesseract.projectnaptha.com/">Tesseract</a> /
+                    <a href="https://aws.amazon.com/textract/" className="text-blue-600 underline pl-2">Amazon
+                        Textract</a>
                 </div>
-                <div className="text-lg font-bold">Please select input method</div>
-                <div className="mt-2 mb-8">
-                    {/* Render radio buttons based on the radioOptions array */}
-                    {radioOptions.map((option) => (
-                        <div key={option.id} className="flex gap-3 items-center text-xl">
-                            <input
-                                type="radio"
-                                id={option.id}
-                                name="convertType"
-                                value={option.value}
-                                checked={convertType === option.value} // Set checked based on the current convertType value
-                                onChange={handleRadioChange} // Call handleRadioChange on radio button change event
-                            />
-                            <label htmlFor={option.id}> {option.label}</label>
-                        </div>
-                    ))}
-                </div>
+
+
+                <RadioGroup title="Please select active API" name="activeAPIRadio" options={apiOptions}
+                            handleRadioChange={handleActiveAPIChange} selectedOption={activeAPI}/>
+
+                <RadioGroup title="Please select input method" name="convertTypeRadio" options={convertTypeOptions}
+                            handleRadioChange={handleConvertTypeChange} selectedOption={convertType}/>
 
                 <hr className="bg-blue-900 pb-0.5 mb-4"/>
 
-
                 <div>
-                    {convertType === 'url' ? (
-                        <ImageURL/>
-                    ) : convertType === 'camera' ? (
-                        <CameraSnapshot/>
-                    ) : (
-                        <UploadFile/>
-                    )}
+                    {
+                        convertType === 'url' ? <ImageURL activeAPI={activeAPI}/> :
+                        convertType === 'camera' ? <CameraSnapshot activeAPI={activeAPI}/> :
+                        <UploadFile activeAPI={activeAPI}/>
+                    }
                 </div>
 
             </div>

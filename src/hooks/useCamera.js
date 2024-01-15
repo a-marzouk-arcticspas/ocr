@@ -7,20 +7,20 @@ const useCamera = () => {
     const cameraPlaceHolderRef = useRef(null);
     const [isCameraOn, setIsCameraOn] = useState(false);
     const [outputImageURL, setOutputImageURL] = useState('');
+    const [cameraStream, setCameraStream] = useState(null);
 
     // Camera actions:
-    const startCamera = () => {
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    const startCamera = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            setCameraStream(stream);
             setIsCameraOn(true);
 
             createVideoElement();
-
-            navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
-                videoRef.current.srcObject = stream;
-                videoRef.current.play();
-            });
-        } else {
-            alert("can not open camera, SSL needs to be activated.");
+            videoRef.current.srcObject = stream;
+            videoRef.current.play();
+        } catch (error) {
+            console.error("Error opening camera: (SSL might be required)", error);
         }
     };
     const takeSnapshot = () => {
@@ -29,13 +29,12 @@ const useCamera = () => {
         context.drawImage(videoRef.current, 0, 0, 600, 480);
         setOutputImageURL( canvasRef.current.toDataURL('image/png'));
     };
-    const closeCamera = () => {
-        navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
-            stream.getTracks().forEach(track => {
-                track.stop();
-            });
-        });
 
+    const closeCamera = () => {
+        if (cameraStream) {
+            cameraStream.getTracks().forEach(track => track.stop());
+            setCameraStream(null);
+        }
         cameraPlaceHolderRef.current.removeChild(videoRef.current);
         setIsCameraOn(false);
     };
@@ -62,7 +61,7 @@ const useCamera = () => {
         canvasRef.current.width = 600;
         canvasRef.current.height = 400;
 
-        canvasPlaceHolder.appendChild( canvasRef.current);
+        canvasPlaceHolder.appendChild(canvasRef.current);
     }
 
 

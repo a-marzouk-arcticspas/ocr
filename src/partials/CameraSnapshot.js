@@ -1,16 +1,20 @@
 import React, {useState} from 'react';
 import useCamera from "../hooks/useCamera";
-import useImageReader from "../hooks/useImageReader";
+import useTesseractImageConverter from "../hooks/useTesseractImageConverter";
 import BasicButton from "../components/BasicButton";
+import GeneratedTextView from "../components/GeneratedTextView";
+import useAwsTextractImageConverter from "../hooks/useAwsTextractImageConverter";
 
-const CameraSnapshot = () => {
-    const [generatedText, setGeneratedText] = useState('');
+const CameraSnapshot = ({activeAPI = "tesseract"}) => {
+    const {convertImageToText: tesseractConvert, isConverting: isTesseractConverting} = useTesseractImageConverter();
+    const {convertImageToText: awsTextractConvert, isConverting: isAwsTextractConverting} = useAwsTextractImageConverter();
+    const [generatedText, setGeneratedText] = useState(null);
     const {isCameraOn, outputImageURL, startCamera, closeCamera, takeSnapshot} = useCamera();
-    const {isConverting, readImageFromURL} = useImageReader()
 
     const convert = async () => {
         closeCamera();
-        setGeneratedText(await readImageFromURL(outputImageURL));
+        const result = activeAPI === 'tesseract' ? await tesseractConvert(outputImageURL) : await awsTextractConvert(outputImageURL);
+        setGeneratedText(result);
     }
 
     return (
@@ -24,7 +28,7 @@ const CameraSnapshot = () => {
 
                         <BasicButton action={takeSnapshot} title="Take a Snapshot" cssClasses="bg-green-700" />
 
-                        <BasicButton isDisabled={isConverting || !outputImageURL} action={convert} title="Convert"/>
+                        <BasicButton isDisabled={isTesseractConverting || isAwsTextractConverting || !outputImageURL} action={convert} title="Convert"/>
                     </div>
 
                 }
@@ -36,20 +40,8 @@ const CameraSnapshot = () => {
             </div>
 
 
-            {
-                generatedText.length > 0 ?
-                    <hr className="bg-blue-900 pb-0.5 mt-8 mb-4 rounded-2xl overflow-hidden"/>
-                    : null
-            }
+            <GeneratedTextView text={generatedText} />
 
-            {
-                generatedText.length > 0 ? (
-                    <div className="text-xl max-w-2xl mb-16">
-                        <div className="mb-2 text-lg font-bold leading-relaxed">Converted text:</div>
-                        <div className="text-green-700 font-bold leading-relaxed">{generatedText}</div>
-                    </div>
-                ) : null
-            }
         </div>
     );
 };

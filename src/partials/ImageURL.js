@@ -1,14 +1,20 @@
 import React, {useState} from "react";
-import useImageReader from "../hooks/useImageReader";
+import useTesseractImageConverter from "../hooks/useTesseractImageConverter";
 import BasicButton from "../components/BasicButton";
+import useAwsTextractImageConverter from "../hooks/useAwsTextractImageConverter";
+import GeneratedTextView from "../components/GeneratedTextView";
 
-export default function ImageURL() {
-    const {isConverting, readImageFromURL} = useImageReader()
-    const [generatedText, setGeneratedText] = useState('');
+export default function ImageURL({activeAPI = "tesseract"}) {
+    const {convertImageToText: tesseractConvert, isConverting: isTesseractConverting} = useTesseractImageConverter();
+    const {convertImageToText: awsTextractConvert, isConverting: isAwsTextractConverting} = useAwsTextractImageConverter();
+    const [generatedText, setGeneratedText] = useState(null);
     const [imageURL, setImageURL] = useState('');
 
-    const convertImage = async () => {
-        updateGeneratedText(await readImageFromURL(imageURL));
+    const convert = async () => {
+
+        const result =  activeAPI === 'tesseract' ? await tesseractConvert(imageURL) : await awsTextractConvert(imageURL);
+
+        updateGeneratedText(result);
     }
 
     const updateGeneratedText = (text) => {
@@ -31,7 +37,7 @@ export default function ImageURL() {
                 onChange={handleURLInput}
             />
 
-            <BasicButton isDisabled={isConverting || !imageURL} action={convertImage}  title="Convert"/>
+            <BasicButton isDisabled={isTesseractConverting || isAwsTextractConverting || !imageURL} action={convert}  title="Convert"/>
 
             <div>
                 {imageURL ? (
@@ -45,44 +51,7 @@ export default function ImageURL() {
                 ) : null}
             </div>
 
-            <hr className="bg-blue-900 pb-0.5 mt-8"/>
-
-            <div className="text-lg mt-4">
-                <div className="text-lg font-bold">
-                    Some sample image URLs
-                </div>
-                <div className="flex-col flex">
-                    <a className="text-blue-600 underline pt-2" rel="noreferrer" target="_blank"
-                       href="https://tesseract.projectnaptha.com/img/eng_bw.png">Sample
-                        1</a>
-                    <a className="text-blue-600 underline pt-2"
-                       rel="noreferrer"
-                       target="_blank"
-                       href="https://study.com/cimages/videopreview/atmosphere-in-literature-definition-examples-and-quiz_114904.jpg">Sample
-                        2</a>
-                    <a className="text-blue-600 underline pt-2"
-                       rel="noreferrer"
-                       target="_blank"
-                       href="https://lilianweng.github.io/posts/2021-01-02-controllable-text-generation/CTRL-examples.png">Sample
-                        3</a>
-                </div>
-            </div>
-
-
-            {
-                generatedText.length > 0 ?
-                    <hr className="bg-blue-900 pb-0.5 mt-8 mb-4"/>
-                    : null
-            }
-
-            {
-                generatedText.length > 0 ? (
-                    <div className="text-xl max-w-2xl mb-16">
-                        <div className="mb-2 text-lg font-bold leading-relaxed">Converted text:</div>
-                        <div className="text-green-700 font-bold leading-relaxed">{generatedText}</div>
-                    </div>
-                ) : null
-            }
+            <GeneratedTextView text={generatedText} />
         </div>
     )
 }

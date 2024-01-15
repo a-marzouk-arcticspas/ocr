@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from "react";
 import Tesseract from "tesseract.js";
 
-export default function useImageReader() {
+const useTesseractImageConverter = () => {
     const workerRef = useRef(null);
     const [isConverting, setIsConverting] = useState(false);
 
@@ -13,7 +13,8 @@ export default function useImageReader() {
 
         setupWorker().then(() => console.log("Worker is ready"));
     });
-    const readImageFromURL = async (imageURL) => {
+
+    const convertImageToText = async (imageURL) => {
         if(!imageURL) return alert("Please insert image url");
 
         setIsConverting(true);
@@ -34,7 +35,9 @@ export default function useImageReader() {
     }
 
     return {
-        readImageFromURL,
+        convertImageToText,
         isConverting
     }
 }
+
+export default useTesseractImageConverter;
