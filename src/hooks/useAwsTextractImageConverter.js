@@ -56,9 +56,8 @@ const useAwsTextractImageConverter = () => {
         } catch (e) {
             alert("Error while uploading to S3 bucket, please check the console for more details.")
             console.log("Error: ",e)
-        }
-        finally {
             setIsConverting(false)
+            return 0;
         }
 
         const textractService = new textract();
@@ -77,8 +76,11 @@ const useAwsTextractImageConverter = () => {
 
             return response.Blocks.filter(block => block.BlockType === "LINE");
         }catch(e){
-            alert("Error while uploading converting the uploaded image, please check the console for more details.")
+            alert("Error while converting the uploaded image, please check the console for more details.")
             console.log("Error: ",e)
+            return 0;
+        } finally {
+            setIsConverting(false)
         }
     }
 
